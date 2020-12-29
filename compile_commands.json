@@ -1,0 +1,26 @@
+[
+  {
+    "directory": "/Users/Robin/src/c/librgl",
+    "file": "main.c",
+    "output": "main.o",
+    "command": "cc -I./include -c main.c -o main.o"
+  },
+  {
+    "directory": "/Users/Robin/src/c/librgl",
+    "file": "lib/rgl/librgl.c",
+    "output": "lib/rgl/librgl.o",
+    "command": "cc -I./include -c lib/rgl/librgl.c -o lib/rgl/librgl.o"
+  },
+  {
+    "directory": "/Users/Robin/src/c/librgl",
+    "file": "lib/rgl/Util.c",
+    "output": "lib/rgl/Util.o",
+    "command": "cc -I./include -c lib/rgl/Util.c -o lib/rgl/Util.o"
+  },
+  {
+    "directory": "/Users/Robin/src/c/librgl",
+    "file": "main.c",
+    "output": "main",
+    "command": "cc main.o lib/rgl/librgl.o lib/rgl/Util/Util.o -o main"
+  }
+]
