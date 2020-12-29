@@ -12,16 +12,21 @@ PROGNAME := $(addsuffix $(BINEXT), $(PROGNAME))
 rwildcard=$(wildcard $1$2) $(foreach d, $(wildcard $1*),$(call rwildcard,$d/,$2))
 
 # Recursively find all C source and header files in the current directory.
-SRC := $(call rwildcard,,*.c)
+# SRC := $(call rwildcard,,*.c)
 HEADERS := $(call rwildcard,,*.h)
 
-CFLAGS += -I./include
+SRC := main.c
+
+LDFLAGS += -Llib -lrgl
 
 OBJ := $(SRC:.c=.o)
 DEP := $(SRC:.c=.d)
 
-$(PROGNAME): $(OBJ)
+$(PROGNAME): $(OBJ) lib/librgl.so
 	$(CC) $(LDFLAGS) $(OBJ) -o $(PROGNAME)
+
+lib/librgl.so: src/rgl.c
+	$(CC) $(CFLAGS) -fpic -c $< -o $@
 
 -include $(DEP)
 
