@@ -1,18 +1,17 @@
 #include <stdio.h>
 
-#include <rgl.h>
-
-int GetUserInput(char *Prompt, int BytesToRead, char *OutString)
-{
-  printf("Main GetUserInput\n");
-  return 0;
-}
+#include <rgl/rgl.h>
 
 int main(int argc, char* argv[])
 {
-  rgl.Util.GetUserInput("", 1, "");
-  rgl.Util.Test();
-  rgl.Test();
-  GetUserInput("", 1, "");
+  char Input[64];
+  rgl.Util.GetUserInput("Enter: ", sizeof(Input), Input);
+  printf("You entered: %s\n", Input);
+
+  FileInfo_t* Test = rgl.FileInfo.New("main.c");
+
+  char Buffer[1024];
+  while (rgl.FileInfo.ReadLine(Test, Buffer, sizeof(Buffer)))
+    printf("%s\n", Buffer);
   return 0;
 }

@@ -1,5 +1,5 @@
 #pragma once
 
-int Util_GetUserInput(char *Prompt, int BytesToRead, char *OutString);
+#include "GetUserInput.h"
 
 void Util_Test();
