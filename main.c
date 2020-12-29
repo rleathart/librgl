@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include "include/rgl.h"
+
+#include <rgl.h>
 
 int GetUserInput(char *Prompt, int BytesToRead, char *OutString)
 {
