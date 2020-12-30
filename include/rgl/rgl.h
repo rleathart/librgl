@@ -4,6 +4,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 typedef struct
 {
@@ -22,6 +23,7 @@ typedef struct
 
     int (*Open)(FileInfo_t*, char*);
     int (*Close)(FileInfo_t*);
+    bool (*Exists)(FileInfo_t*);
     int (*ReadLine)(FileInfo_t*, char*, size_t);
     char** (*ReadLines)(FileInfo_t*, int*);
   } FileInfo;

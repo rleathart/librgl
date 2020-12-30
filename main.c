@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+#include <stdbool.h>
+
 #include <rgl/rgl.h>
 
 int main(int argc, char* argv[])
@@ -8,10 +10,12 @@ int main(int argc, char* argv[])
   rgl.Util.GetUserInput("Enter: ", sizeof(Input), Input);
   printf("You entered: %s\n", Input);
 
-  FileInfo_t* Test = rgl.FileInfo.New("main.c");
+  FileInfo_t* Test = rgl.FileInfo.New("main.d");
 
-  char Buffer[1024];
-  while (rgl.FileInfo.ReadLine(Test, Buffer, sizeof(Buffer)))
-    printf("%s\n", Buffer);
+  int LineCount = 0;
+  char** Lines = rgl.FileInfo.ReadLines(Test, &LineCount);
+
+  for (int i = 0; i < LineCount; ++i)
+    printf("%s\n", Lines[i]);
   return 0;
 }

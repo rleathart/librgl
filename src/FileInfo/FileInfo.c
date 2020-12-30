@@ -84,6 +84,15 @@ int FileInfo_ReadLine(FileInfo_t* self, char* Buffer, size_t size)
   return 0;
 }
 
+bool FileInfo_Exists(FileInfo_t *self)
+{
+  int Return = FileInfo_Open(self, "r");
+  if (Return == 0)
+    FileInfo_Close(self);
+
+  return Return == 0;
+}
+
 void FileInfo_Free(FileInfo_t** self)
 {
   FileInfo_Close(*self);

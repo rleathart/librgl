@@ -21,6 +21,7 @@ const _rglNamespace rgl = {
     .Free = FileInfo_Free,
     .Open = FileInfo_Open,
     .Close = FileInfo_Close,
+    .Exists = FileInfo_Exists,
     .ReadLine = FileInfo_ReadLine,
     .ReadLines = FileInfo_ReadLines
   }
