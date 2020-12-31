@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#define Node_t rgl_LinkedList_Node_t
+#define LinkedList_t rgl_LinkedList_t
+
 typedef struct
 {
   void (*Test)();
@@ -29,8 +32,6 @@ typedef struct
     char** (*ReadLines)(FileInfo_t*, int*);
   } FileInfo;
 
-#define Node_t rgl_LinkedList_Node_t
-#define LinkedList_t rgl_LinkedList_t
   struct
   {
     struct
@@ -47,10 +48,18 @@ typedef struct
     void (*Remove)(LinkedList_t* List, Node_t*);
     Node_t* (*Find)(LinkedList_t*, void*, size_t);
   } LinkedList;
+} _rglNamespace;
+
+extern const _rglNamespace rgl;
+
 #ifdef LIBRGL_FULLY_QUALIFY_TYPE_NAMES
 #undef Node_t
 #undef LinkedList_t
 #endif
-} _rglNamespace;
 
-extern const _rglNamespace rgl;
+#ifdef LIBRGL_NO_PREFIX
+#define Util rgl.Util
+#define FileInfo rgl.FileInfo
+#define LinkedList rgl.LinkedList
+#define LinkedList_ForEach rgl_LinkedList_ForEach
+#endif

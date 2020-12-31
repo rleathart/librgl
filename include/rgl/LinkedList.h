@@ -21,7 +21,7 @@ typedef struct
   size_t Length;
 } rgl_LinkedList_t;
 
-#define LinkedList_ForEach(Node, List)                                         \
+#define rgl_LinkedList_ForEach(Node, List)                                         \
   for (Node_t* Node = List->Head; Node; Node = Node->Next)
 
 #undef Node_t
