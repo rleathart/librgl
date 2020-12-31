@@ -2,3 +2,4 @@ main
 .cache
 *.o
 *.d
+lib/*
