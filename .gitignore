@@ -2,4 +2,6 @@ main
 .cache
 *.o
 *.d
-lib/*
+*.dylib
+*.dll
+*.so
