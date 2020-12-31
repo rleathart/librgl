@@ -1,6 +1,7 @@
 #pragma once
 
 #include <rgl/FileInfo.h>
+#include <rgl/LinkedList.h>
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -27,6 +28,29 @@ typedef struct
     int (*ReadLine)(FileInfo_t*, char*, size_t);
     char** (*ReadLines)(FileInfo_t*, int*);
   } FileInfo;
+
+#define Node_t rgl_LinkedList_Node_t
+#define LinkedList_t rgl_LinkedList_t
+  struct
+  {
+    struct
+    {
+      Node_t* (*New)(void*, size_t);
+      void (*Free)(Node_t**);
+    } Node;
+
+    LinkedList_t* (*New)();
+    void (*Free)(LinkedList_t**);
+
+    void (*Append)(LinkedList_t* List, Node_t*);
+    void (*Prepend)(LinkedList_t* List, Node_t*);
+    void (*Remove)(LinkedList_t* List, Node_t*);
+    Node_t* (*Find)(LinkedList_t*, void*, size_t);
+  } LinkedList;
+#ifdef LIBRGL_FULLY_QUALIFY_TYPE_NAMES
+#undef Node_t
+#undef LinkedList_t
+#endif
 } _rglNamespace;
 
 extern const _rglNamespace rgl;

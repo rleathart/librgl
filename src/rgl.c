@@ -2,6 +2,7 @@
 
 #include "Util/Util.h"
 #include "FileInfo/FileInfo.h"
+#include "LinkedList/LinkedList.h"
 
 #include <stdio.h>
 
@@ -24,5 +25,17 @@ const _rglNamespace rgl = {
     .Exists = FileInfo_Exists,
     .ReadLine = FileInfo_ReadLine,
     .ReadLines = FileInfo_ReadLines
+  },
+  .LinkedList = {
+    .Node = {
+      .New = LinkedList_Node_New,
+      .Free = LinkedList_Node_Free
+    },
+    .New = LinkedList_New,
+    .Free = LinkedList_Free,
+    .Append = LinkedList_Append,
+    .Prepend = LinkedList_Prepend,
+    .Find = LinkedList_Find,
+    .Remove = LinkedList_Remove
   }
 };
