@@ -1,3 +1,10 @@
+Building the library
+====================
+
+```bash
+cmake -S . -B lib && cmake --build lib
+```
+
 Directory Structure
 ===================
 
