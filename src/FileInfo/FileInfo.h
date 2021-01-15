@@ -18,6 +18,6 @@ int FileInfo_Close(FileInfo_t* self);
 
 char** FileInfo_ReadLines(FileInfo_t* self, int* LineCount);
 
-int FileInfo_ReadLine(FileInfo_t* self, char* Buffer, size_t size);
+bool FileInfo_ReadLine(FileInfo_t* self, char* Buffer, size_t size);
 
 bool FileInfo_Exists(FileInfo_t* self);

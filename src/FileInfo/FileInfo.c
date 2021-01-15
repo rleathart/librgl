@@ -65,12 +65,12 @@ char** FileInfo_ReadLines(FileInfo_t* self, int* LineCount)
   return LineArray;
 }
 
-int FileInfo_ReadLine(FileInfo_t* self, char* Buffer, size_t size)
+bool FileInfo_ReadLine(FileInfo_t* self, char* Buffer, size_t size)
 {
   if (!self->FilePointer)
     FileInfo_Open(self, "r");
   if (!self->FilePointer)
-    return EXIT_FAILURE;
+    return false;
 
   Buffer[0] = '\0';
   Buffer[size - 1] = '\0';
@@ -78,10 +78,10 @@ int FileInfo_ReadLine(FileInfo_t* self, char* Buffer, size_t size)
   if (fgets(Buffer, size, self->FilePointer))
   {
     strtok(Buffer, "\n");
-    return 1;
+    return true;
   }
 
-  return 0;
+  return false;
 }
 
 bool FileInfo_Exists(FileInfo_t *self)
