@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#include <rgl_exports.h>
+
 #define Node_t rgl_LinkedList_Node_t
 #define LinkedList_t rgl_LinkedList_t
 
@@ -50,7 +52,7 @@ typedef struct
   } LinkedList;
 } _rglNamespace;
 
-extern const _rglNamespace rgl;
+extern const RGL_EXPORT _rglNamespace rgl;
 
 #ifdef LIBRGL_FULLY_QUALIFY_TYPE_NAMES
 #undef Node_t
