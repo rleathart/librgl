@@ -36,6 +36,8 @@ const _rglNamespace rgl = {
     .Append = LinkedList_Append,
     .Prepend = LinkedList_Prepend,
     .Find = LinkedList_Find,
-    .Remove = LinkedList_Remove
+    .FindIndex = LinkedList_FindIndex,
+    .Remove = LinkedList_Remove,
+    .InsertAfter = LinkedList_InsertAfter
   }
 };

@@ -15,7 +15,9 @@ void LinkedList_Free(LinkedList_t** List);
 void LinkedList_Append(LinkedList_t* List, Node_t* NewNode);
 void LinkedList_Prepend(LinkedList_t* List, Node_t* NewNode);
 Node_t* LinkedList_Find(LinkedList_t* List, void* Data, size_t DataSize);
+size_t LinkedList_FindIndex(LinkedList_t* List, void* Data, size_t DataSize);
 void LinkedList_Remove(LinkedList_t* List, Node_t* Node);
+int LinkedList_InsertAfter(LinkedList_t* List, Node_t* NewNode, size_t Index);
 
 #undef Node_t
 #undef LinkedList_t

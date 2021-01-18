@@ -49,6 +49,8 @@ typedef struct
     void (*Prepend)(LinkedList_t* List, Node_t*);
     void (*Remove)(LinkedList_t* List, Node_t*);
     Node_t* (*Find)(LinkedList_t*, void*, size_t);
+    size_t (*FindIndex)(LinkedList_t*, void*, size_t);
+    int (*InsertAfter)(LinkedList_t*, Node_t*, size_t);
   } LinkedList;
 } _rglNamespace;
 
