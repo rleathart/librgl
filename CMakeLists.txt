@@ -18,6 +18,7 @@ if (WIN32) # No-one cares about your *_s functions, Microsoft.
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 GENERATE_EXPORT_HEADER(${PROJECT_NAME}
   BASE_NAME ${PROJECT_NAME}
   EXPORT_MACRO_NAME RGL_EXPORT
