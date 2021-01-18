@@ -80,6 +80,19 @@ void LinkedList_Prepend(LinkedList_t* List, Node_t* NewNode)
   List->Head = NewNode;
 }
 
+size_t LinkedList_FindIndex(LinkedList_t* List, void* Data, size_t DataSize)
+{
+  size_t Index = 0;
+  for (Node_t* Current = List->Head; Current; Current = Current->Next)
+  {
+    if (memcmp(Current->Data, Data, DataSize) == 0)
+      return Index;
+    ++Index;
+  }
+  // Not ideal, but need a way of indicating that node not in list.
+  return -1;
+}
+
 Node_t* LinkedList_Find(LinkedList_t* List, void* Data, size_t DataSize)
 {
   for (Node_t* Current = List->Head; Current; Current = Current->Next)
