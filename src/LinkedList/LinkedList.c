@@ -115,16 +115,3 @@ void LinkedList_Remove(LinkedList_t* List, Node_t* Node)
 #undef Node
 #undef Node_t
 #undef LinkedList_t
-
-/* const _LinkedListNamespace LinkedList = { */
-/*   .New = LinkedList_New, */
-/*   .Free = LinkedList_Free, */
-/*   .Append = LinkedList_Append, */
-/*   .Prepend = LinkedList_Prepend, */
-/*   .Find = LinkedList_Find, */
-/*   .Remove = LinkedList_Remove, */
-/*   .Node = { */
-/*     .New = Node_New, */
-/*     .Free = Node_Free */
-/*   } */
-/* }; */
