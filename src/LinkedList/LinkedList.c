@@ -28,8 +28,7 @@ void LinkedList_Node_Free(Node_t** Node)
 LinkedList_t* LinkedList_New()
 {
   LinkedList_t* List = malloc(sizeof(LinkedList_t));
-  List->Head = LinkedList_Node_New(NULL, 0);
-  List->Tail = List->Head;
+  List->Head = List->Tail = NULL;
   List->Length = 0;
 
   return List;
