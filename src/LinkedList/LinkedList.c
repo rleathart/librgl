@@ -48,14 +48,67 @@ void LinkedList_Free(LinkedList_t** List)
   *List = NULL;
 }
 
+/* Initalise an empty list with a given node */
+static void LinkedList_Init(LinkedList_t* List, Node_t* NewNode)
+{
+  List->Head = List->Tail = NewNode;
+  List->Length = 1;
+}
+
+int LinkedList_InsertAfter(LinkedList_t* List, Node_t* NewNode, size_t Index)
+{
+  if (List->Length == 0 && Index == 0)
+  {
+    LinkedList_Init(List, NewNode);
+    return EXIT_SUCCESS;
+  }
+
+  if (List->Length == 0 && Index > 0)
+    return EXIT_FAILURE;
+
+  if (Index > List->Length - 1)
+    return EXIT_FAILURE;
+
+  if (Index == List->Length - 1)
+  {
+    LinkedList_Append(List, NewNode);
+    return EXIT_SUCCESS;
+  }
+
+  /* Start from the end of the list closest to the index. This avoids traversing
+   * the entire list in order to insert after, say, List->Length - 2 */
+  Node_t* Current;
+  if (Index < List->Length / 2)
+  {
+    Current = List->Head;
+    for (size_t i = 0; i < Index; ++i)
+      Current = Current->Next;
+  }
+  else
+  {
+    Current = List->Tail;
+    for (size_t i = List->Length - 1; i > Index; --i)
+      Current = Current->Prev;
+  }
+
+  // This shouldn't happen but check anyway.
+  if (!Current->Next)
+    return EXIT_FAILURE;
+
+  // We're inserting somewhere in the middle of the list.
+  Current->Next->Prev = NewNode;
+  NewNode->Prev = Current;
+  NewNode->Next = Current->Next;
+  Current->Next = NewNode;
+  List->Length++;
+
+  return EXIT_SUCCESS;
+}
+
 void LinkedList_Append(LinkedList_t* List, Node_t* NewNode)
 {
   if (List->Length == 0)
-  {
-    List->Head = List->Tail = NewNode;
-    List->Length = 1;
-    return;
-  }
+    return LinkedList_Init(List, NewNode);
 
   NewNode->Prev = List->Tail;
   List->Tail->Next = NewNode;
@@ -66,11 +119,7 @@ void LinkedList_Append(LinkedList_t* List, Node_t* NewNode)
 void LinkedList_Prepend(LinkedList_t* List, Node_t* NewNode)
 {
   if (List->Length == 0)
-  {
-    List->Head = List->Tail = NewNode;
-    List->Length = 1;
-    return;
-  }
+    return LinkedList_Init(List, NewNode);
 
   NewNode->Prev = NULL;
   List->Length++;
