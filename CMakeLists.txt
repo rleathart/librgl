@@ -18,11 +18,10 @@ if (WIN32) # No-one cares about your *_s functions, Microsoft.
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 GENERATE_EXPORT_HEADER(${PROJECT_NAME}
   BASE_NAME ${PROJECT_NAME}
   EXPORT_MACRO_NAME RGL_EXPORT
-  EXPORT_FILE_NAME rgl_exports.h
+  EXPORT_FILE_NAME ${CMAKE_CURRENT_LIST_DIR}/include/rgl/rgl_exports.h
   STATIC_DEFINE SHARED_EXPORTS_BUILT_AS_STATIC # Is this required?
   )
 

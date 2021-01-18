@@ -1,4 +1,6 @@
 main
+# We create this file with CMake
+include/rgl/rgl_exports.h
 .cache
 *.o
 *.d

@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include <rgl_exports.h>
+#include "rgl_exports.h"
 
 #define Node_t rgl_LinkedList_Node_t
 #define LinkedList_t rgl_LinkedList_t
