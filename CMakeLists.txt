@@ -49,16 +49,26 @@ endif()
 
 ################################################################################
 #                         INSTALLATION
+# Read CMAKE_INSTALL_PREFIX from environment if not given on the command-line
+if(DEFINED ENV{CMAKE_INSTALL_PREFIX} AND
+    CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  set(CMAKE_INSTALL_PREFIX $ENV{CMAKE_INSTALL_PREFIX} CACHE
+    PATH "Installation directory" FORCE)
+endif()
+
+message("Install prefix: " ${CMAKE_INSTALL_PREFIX})
 target_include_directories(${PROJECT_NAME} PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
     PRIVATE src)
+
 install(
   TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Config
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
   )
+
 install(DIRECTORY include/ DESTINATION include)
 install(EXPORT ${PROJECT_NAME}Config DESTINATION lib/cmake/${PROJECT_NAME})
 export(TARGETS ${PROJECT_NAME} FILE ${PROJECT_NAME}Config.cmake)
