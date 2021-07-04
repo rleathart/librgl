@@ -16,13 +16,13 @@ typedef struct
 {
   void (*Test)();
 
-  struct
+  struct rgl_Util
   {
     int (*GetUserInput)(char*, int, char*);
     void (*Test)();
   } Util;
 
-  struct
+  struct rgl_FileInfo
   {
     FileInfo_t* (*New)(char*);
     void (*Free)(FileInfo_t**);
@@ -34,9 +34,9 @@ typedef struct
     char** (*ReadLines)(FileInfo_t*, int*);
   } FileInfo;
 
-  struct
+  struct rgl_LinkedList
   {
-    struct
+    struct rgl_Node
     {
       Node_t* (*New)(void*, size_t);
       void (*Free)(Node_t**);
