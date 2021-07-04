@@ -1,27 +1,29 @@
 #pragma once
 
-#include <stdlib.h>
-
-typedef struct Node rgl_LinkedList_Node_t;
-
-#define Node_t rgl_LinkedList_Node_t
-
+typedef struct Node Node;
 struct Node
 {
-  void* Data;
-  Node_t* Next;
-  Node_t* Prev;
+  void* data;
+  Node* next;
+  Node* prev;
 };
 
 typedef struct
 {
-  Node_t* Head;
-  Node_t* Tail;
+  Node* head;
+  Node* tail;
 
-  size_t Length;
-} rgl_LinkedList_t;
+  size_t length;
+} LinkedList;
 
-#define rgl_LinkedList_ForEach(Node, List)                                         \
-  for (Node_t* Node = List->Head; Node; Node = Node->Next)
 
-#undef Node_t
+Node* linkedlist_node_new(void* data, size_t data_size);
+void linkedlist_node_free(Node** node);
+LinkedList* linkedlist_new();
+void linkedlist_free(LinkedList** list);
+int linkedlist_insert_after(LinkedList* list, Node* newnode, size_t index);
+void linkedlist_append(LinkedList* list, Node* newnode);
+void linkedlist_prepend(LinkedList* list, Node* newnode);
+size_t linkedlist_findindex(LinkedList* list, void* data, size_t datasize);
+Node* linkedlist_find(LinkedList* list, void* data, size_t datasize);
+void linkedlist_remove(LinkedList* list, Node* node);

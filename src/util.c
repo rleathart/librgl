@@ -1,6 +1,7 @@
-#include "GetUserInput.h"
+#include <stdio.h>
+#include <string.h>
 
-int Util_GetUserInput(char* Prompt, int BytesToRead, char* OutString)
+int get_user_input(char* Prompt, int BytesToRead, char* OutString)
 {
   printf("%s", Prompt);
   fgets(OutString, BytesToRead, stdin);

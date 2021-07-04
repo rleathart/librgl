@@ -1,32 +1,65 @@
 cmake_minimum_required(VERSION 3.10)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-include(GenerateExportHeader)
+if (WIN32)
+  add_compile_definitions(
+    _CRT_SECURE_NO_WARNINGS
+    _CRT_NONSTDC_NO_DEPRECATE
+    )
+endif()
+
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "" FORCE)
+endif()
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+  add_compile_definitions(_DEBUG=1 DEBUG=1)
+endif()
+
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS YES CACHE BOOL "Export all symbols")
+
+# Read CMAKE_PREFIX_PATH from environment if it's not set
+if(NOT CMAKE_PREFIX_PATH)
+  set(CMAKE_PREFIX_PATH $ENV{CMAKE_PREFIX_PATH})
+  # Convert from Unix path sep
+  string(REPLACE ":" ";" CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH}")
+endif()
+
+foreach(path ${CMAKE_PREFIX_PATH})
+  include_directories(${path}/include)
+  link_directories(${path}/lib)
+endforeach(path)
 
 project(rgl C)
 
-add_library(${PROJECT_NAME} SHARED
-  src/rgl.c
-  src/Util/Util.c
-  src/Util/GetUserInput.c
-  src/LinkedList/LinkedList.c
-  src/FileInfo/FileInfo.c
+include_directories(include)
+
+set(SRC
+  src/util.c
+  src/linkedlist.c
+  src/fileinfo.c
   )
 
-if (WIN32) # No-one cares about your *_s functions, Microsoft.
-  target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS)
+add_library(${PROJECT_NAME} ${SRC})
+
+if(RGL_BUILD_TESTS)
+  add_executable(test_rgl test/rgl.c)
+  target_link_libraries(test_rgl ${PROJECT_NAME})
 endif()
 
-target_include_directories(${PROJECT_NAME} PUBLIC include)
-GENERATE_EXPORT_HEADER(${PROJECT_NAME}
-  BASE_NAME ${PROJECT_NAME}
-  EXPORT_MACRO_NAME RGL_EXPORT
-  EXPORT_FILE_NAME ${CMAKE_CURRENT_LIST_DIR}/include/rgl/rgl_exports.h
-  STATIC_DEFINE SHARED_EXPORTS_BUILT_AS_STATIC # Is this required?
+################################################################################
+#                         INSTALLATION
+target_include_directories(${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+    PRIVATE src)
+install(
+  TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Config
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
   )
-
-SET(TEST_EXE librgl_test)
-
-add_executable(${TEST_EXE} main.c)
-target_link_libraries(${TEST_EXE} ${PROJECT_NAME})
-target_include_directories(${TEST_EXE} PUBLIC include)
+install(DIRECTORY include/ DESTINATION include)
+install(EXPORT ${PROJECT_NAME}Config DESTINATION lib/cmake/${PROJECT_NAME})
+export(TARGETS ${PROJECT_NAME} FILE ${PROJECT_NAME}Config.cmake)
+################################################################################
