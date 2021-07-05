@@ -41,8 +41,13 @@ set(SRC
   src/threadpool.c
   )
 
+set(RGL_LIBS)
+if(WIN32)
+  list(APPEND RGL_LIBS pthreadVC2)
+endif()
+
 add_library(${PROJECT_NAME} ${SRC})
-target_link_libraries(${PROJECT_NAME} pthreadVC2)
+target_link_libraries(${PROJECT_NAME} ${RGL_LIBS})
 
 if(RGL_BUILD_TESTS)
   include(CTest)
