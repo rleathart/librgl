@@ -19,8 +19,8 @@ typedef struct
 } LinkedList;
 
 
-Node* linkedlist_node_new(void* data, size_t data_size);
-void linkedlist_node_free(Node** node);
+Node* node_new(void* data, size_t data_size);
+void node_free(Node** node);
 LinkedList* linkedlist_new();
 void linkedlist_free(LinkedList** list);
 int linkedlist_insert_after(LinkedList* list, Node* newnode, size_t index);

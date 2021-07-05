@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-Node* linkedlist_node_new(void* data, size_t data_size)
+Node* node_new(void* data, size_t data_size)
 {
   Node* node = malloc(sizeof(*node));
   node->data = malloc(data_size);
@@ -15,7 +15,7 @@ Node* linkedlist_node_new(void* data, size_t data_size)
   return node;
 }
 
-void linkedlist_node_free(Node** node)
+void node_free(Node** node)
 {
   free((*node)->data);
   (*node)->data = NULL;
@@ -166,7 +166,7 @@ void linkedlist_remove(LinkedList* list, Node* node)
     node->next->prev = node->prev;
   }
 
-  linkedlist_node_free(&node);
+  node_free(&node);
 
   list->length--;
 }
