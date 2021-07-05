@@ -13,6 +13,14 @@ Installing the library
 cmake --install build
 ```
 
+Running tests
+=============
+
+```bash
+cmake -B build -DRGL_BUILD_TESTS=ON
+cmake --build build --target test
+```
+
 Directory Structure
 ===================
 
@@ -20,6 +28,7 @@ Directory | Contains
 --------- | --------
 include   | Public headers.
 src       | All library source code and private headers.
+test      | Source code for unit/functional tests.
 
 Code style
 ==========

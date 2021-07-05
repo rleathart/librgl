@@ -38,13 +38,17 @@ set(SRC
   src/util.c
   src/linkedlist.c
   src/fileinfo.c
+  src/threadpool.c
   )
 
 add_library(${PROJECT_NAME} ${SRC})
+target_link_libraries(${PROJECT_NAME} pthreadVC2)
 
 if(RGL_BUILD_TESTS)
-  add_executable(test_rgl test/rgl.c)
-  target_link_libraries(test_rgl ${PROJECT_NAME})
+  include(CTest)
+  add_executable(test_threadpool test/threadpool.c)
+  target_link_libraries(test_threadpool ${PROJECT_NAME})
+  add_test(NAME threadpool COMMAND test_threadpool)
 endif()
 
 ################################################################################
