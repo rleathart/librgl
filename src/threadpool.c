@@ -34,7 +34,6 @@ static void* worker_thread(void* void_args)
 
     // Get task from queue
     Task* task = ringbuffer_pop(pool->queue);
-    assert(task);
 
     // Release lock
     err = pthread_mutex_unlock(&pool->mutex);
