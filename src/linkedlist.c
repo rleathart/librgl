@@ -114,16 +114,16 @@ void linkedlist_append(LinkedList* list, Node* newnode)
   list->tail = newnode;
 }
 
-void LinkedList_Prepend(LinkedList* List, Node* NewNode)
+void linkedlist_prepend(LinkedList* list, Node* new_node)
 {
-  if (List->length == 0)
-    return linkedlist_init(List, NewNode);
+  if (list->length == 0)
+    return linkedlist_init(list, new_node);
 
-  NewNode->prev = NULL;
-  List->length++;
-  List->head->prev = NewNode;
-  NewNode->next = List->head;
-  List->head = NewNode;
+  new_node->prev = NULL;
+  list->length++;
+  list->head->prev = new_node;
+  new_node->next = list->head;
+  list->head = new_node;
 }
 
 size_t linkedlist_find_index(LinkedList* list, void* data, size_t data_size)
