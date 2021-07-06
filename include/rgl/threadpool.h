@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #include <rgl/defs.h>
+#include <rgl/ringbuffer.h>
 
 // What we want here is
 //  Create a pool of n threads at application startup
@@ -22,11 +23,9 @@ typedef struct
   u64 nthreads;
   pthread_t* threads;
 
-  Task** queue; // Array of Task pointers, means we can keep track of tasks
-  u64 queue_size;
-  u64 head;
-  u64 tail;
-  u64 pending_tasks;
+  // For queue, we want a ring buffer that can be dynamically grown if the
+  // buffer becomes full
+  RingBuffer* queue; // Array of Task pointers, means we can keep track of tasks
 
   pthread_mutex_t mutex;
   pthread_cond_t cond;

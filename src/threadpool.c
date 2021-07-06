@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 Task* task_new(Task* task, void* (*func)(void*), void* args)
 {
@@ -20,57 +21,66 @@ Task* task_new(Task* task, void* (*func)(void*), void* args)
 static void* worker_thread(void* void_args)
 {
   ThreadPool* pool = (ThreadPool*)void_args;
-  Task* task;
+  int err = 0;
   for (;;)
   {
     // Aquire lock
-    pthread_mutex_lock(&pool->mutex);
-    // wait for condition
-    while (pool->pending_tasks == 0)
-      pthread_cond_wait(&pool->cond, &pool->mutex);
+    err = pthread_mutex_lock(&pool->mutex);
+    assert(!err);
+    // No pending tasks so wait for one to be queued
+    while (pool->queue->used == 0)
+      err = pthread_cond_wait(&pool->cond, &pool->mutex);
+    assert(!err);
+
     // Get task from queue
-    task = pool->queue[pool->head];
-    pool->head = (pool->head + 1) % (pool->queue_size * 2);
-    pool->pending_tasks--;
+    Task* task = ringbuffer_pop(pool->queue);
+    assert(task);
 
     // Release lock
-    pthread_mutex_unlock(&pool->mutex);
+    err = pthread_mutex_unlock(&pool->mutex);
+    assert(!err);
     // Do some work
-    task->result = task->func(task->args);
-    task->is_complete = true;
+    if (task)
+    {
+      printf("task: %p\n", task);
+      task->result = task->func(task->args);
+      task->is_complete = true;
+    }
   }
   return NULL;
 }
 
 void threadpool_new(ThreadPool* pool, u64 nthreads)
 {
+  int err = 0;
   memset(pool, 0, sizeof(*pool));
   pool->threads = malloc(nthreads * sizeof(*pool->threads));
-  pool->queue_size = 64; // Initial queue size, we will grow if needed
-  pool->queue = malloc(pool->queue_size * sizeof(Task*));
+  pool->queue = malloc(sizeof(*pool->queue));
+  ringbuffer_new(pool->queue, 128, true);
 
-  pthread_mutex_init(&pool->mutex, NULL);
-  pthread_cond_init(&pool->cond, NULL);
+  err = pthread_mutex_init(&pool->mutex, NULL);
+  assert(!err);
+  err = pthread_cond_init(&pool->cond, NULL);
+  assert(!err);
 
   for (int i = 0; i < nthreads; i++)
   {
-    pthread_create(&pool->threads[i], NULL, worker_thread, pool);
+    err = pthread_create(&pool->threads[i], NULL, worker_thread, pool);
+    assert(!err);
     pool->nthreads++;
   }
 }
 
 void threadpool_queue_task(ThreadPool* pool, Task* task)
 {
-  pthread_mutex_lock(&pool->mutex);
+  int err = 0;
+  err = pthread_mutex_lock(&pool->mutex);
+  assert(!err);
 
-  // Queue is full, let's resize
-  if (pool->pending_tasks == pool->queue_size)
-    pool->queue = realloc(pool->queue, (pool->queue_size *= 2) * sizeof(Task*));
+  ringbuffer_push(pool->queue, task);
 
-  pool->queue[pool->tail] = task;
-  pool->tail = (pool->tail + 1) % (pool->queue_size * 2);
-  pool->pending_tasks++;
-
-  pthread_cond_signal(&pool->cond);
-  pthread_mutex_unlock(&pool->mutex);
+  err = pthread_cond_signal(&pool->cond);
+  assert(!err);
+  err = pthread_mutex_unlock(&pool->mutex);
+  assert(!err);
 }

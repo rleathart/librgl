@@ -37,6 +37,8 @@ include_directories(include)
 set(SRC
   src/util.c
   src/linkedlist.c
+  src/queue.c
+  src/ringbuffer.c
   src/fileinfo.c
   src/threadpool.c
   )
@@ -54,6 +56,14 @@ if(RGL_BUILD_TESTS)
   add_executable(test_threadpool test/threadpool.c)
   target_link_libraries(test_threadpool ${PROJECT_NAME})
   add_test(NAME threadpool COMMAND test_threadpool)
+
+  add_executable(test_queue test/queue.c)
+  target_link_libraries(test_queue ${PROJECT_NAME})
+  add_test(NAME queue COMMAND test_queue)
+
+  add_executable(test_ringbuffer test/ringbuffer.c)
+  target_link_libraries(test_ringbuffer ${PROJECT_NAME})
+  add_test(NAME ringbuffer COMMAND test_ringbuffer)
 endif()
 
 ################################################################################
