@@ -45,7 +45,8 @@ set(SRC
 
 set(RGL_LIBS)
 if(WIN32)
-  list(APPEND RGL_LIBS pthreadVC2)
+  find_package(pthread REQUIRED)
+  list(APPEND RGL_LIBS pthread)
 endif()
 
 add_library(${PROJECT_NAME} ${SRC})
