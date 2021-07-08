@@ -24,7 +24,6 @@ static void* worker_thread(void* void_args)
   int err = 0;
   for (;;)
   {
-    // Aquire lock
     err = pthread_mutex_lock(&pool->mutex);
     assert(!err);
     // No pending tasks so wait for one to be queued
@@ -32,16 +31,14 @@ static void* worker_thread(void* void_args)
       err = pthread_cond_wait(&pool->cond, &pool->mutex);
     assert(!err);
 
-    // Get task from queue
     Task* task = *(Task**)ringbuffer_pop(pool->queue);
 
-    // Release lock
     err = pthread_mutex_unlock(&pool->mutex);
     assert(!err);
+
     // Do some work
     if (task)
     {
-      printf("task: %p\n", task);
       task->result = task->func(task->args);
       task->is_complete = true;
     }
