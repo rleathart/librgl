@@ -1,12 +1,14 @@
 #include <rgl/ringbuffer.h>
 
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
-void ringbuffer_new(RingBuffer* self, u64 capacity, bool resize_when_full)
+void ringbuffer_new(RingBuffer* self, u64 capacity, u64 data_size,
+                    bool resize_when_full)
 {
   memset(self, 0, sizeof(*self));
+  self->data_size = data_size;
   self->capacity = capacity;
   self->data = malloc(self->capacity * sizeof(void*));
   self->resize_when_full = resize_when_full;
@@ -45,7 +47,8 @@ void ringbuffer_push(RingBuffer* self, void* data)
   else if (!self->resize_when_full)
     self->used++;
 
-  self->data[self->tail] = data;
+  self->data[self->tail] = malloc(self->data_size);
+  memcpy(self->data[self->tail], data, self->data_size);
   self->tail = ++self->tail % self->capacity;
 }
 

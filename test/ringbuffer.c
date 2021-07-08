@@ -6,13 +6,11 @@
 int main(int argc, char** argv)
 {
   RingBuffer rb;
-  ringbuffer_new(&rb, 128, true);
+  ringbuffer_new(&rb, 128, sizeof(int), true);
 
   for (int i = 0; i < 256; i++)
   {
-    int* ptr = malloc(sizeof(int*));
-    *ptr = i;
-    ringbuffer_push(&rb, ptr);
+    ringbuffer_push(&rb, &i);
     if (i % 2 == 1)
       ringbuffer_pop(&rb);
   }

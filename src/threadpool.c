@@ -33,7 +33,7 @@ static void* worker_thread(void* void_args)
     assert(!err);
 
     // Get task from queue
-    Task* task = ringbuffer_pop(pool->queue);
+    Task* task = *(Task**)ringbuffer_pop(pool->queue);
 
     // Release lock
     err = pthread_mutex_unlock(&pool->mutex);
@@ -55,7 +55,7 @@ void threadpool_new(ThreadPool* pool, u64 nthreads)
   memset(pool, 0, sizeof(*pool));
   pool->threads = malloc(nthreads * sizeof(*pool->threads));
   pool->queue = malloc(sizeof(*pool->queue));
-  ringbuffer_new(pool->queue, 128, true);
+  ringbuffer_new(pool->queue, 128, sizeof(Task*), true);
 
   err = pthread_mutex_init(&pool->mutex, NULL);
   assert(!err);
@@ -76,7 +76,7 @@ void threadpool_queue_task(ThreadPool* pool, Task* task)
   err = pthread_mutex_lock(&pool->mutex);
   assert(!err);
 
-  ringbuffer_push(pool->queue, task);
+  ringbuffer_push(pool->queue, &task);
 
   err = pthread_cond_signal(&pool->cond);
   assert(!err);
