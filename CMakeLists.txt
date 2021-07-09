@@ -41,6 +41,8 @@ set(SRC
   src/ringbuffer.c
   src/fileinfo.c
   src/threadpool.c
+  src/logging.c
+  src/array.c
   )
 
 set(RGL_LIBS)
@@ -65,6 +67,14 @@ if(RGL_BUILD_TESTS)
   add_executable(test_ringbuffer test/ringbuffer.c)
   target_link_libraries(test_ringbuffer ${PROJECT_NAME})
   add_test(NAME ringbuffer COMMAND test_ringbuffer)
+
+  add_executable(test_logging test/logging.c)
+  target_link_libraries(test_logging ${PROJECT_NAME})
+  add_test(NAME logging COMMAND test_logging)
+
+  add_executable(test_array test/array.c)
+  target_link_libraries(test_array ${PROJECT_NAME})
+  add_test(NAME array COMMAND test_array)
 endif()
 
 ################################################################################
