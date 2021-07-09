@@ -1,6 +1,14 @@
 #pragma once
 
+#include <stdio.h>
+
 #include <rgl/defs.h>
+
+typedef struct
+{
+  char* filename;
+  FILE* stream;
+} LoggerStream;
 
 typedef enum
 {
@@ -29,6 +37,8 @@ typedef enum
 __attribute__((__format__ (__printf__, 5, 6)))
 void _rgl_logger(DebugLevel level, char* file, int line, const char* func, const char* fmt, ...);
 // clang-format on
+
+void rgl_logger_add_stream(LoggerStream stream);
 
 void t_debug_level_set(DebugLevel level);
 DebugLevel t_debug_level_get(void);

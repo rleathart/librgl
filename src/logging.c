@@ -4,6 +4,7 @@
 #include <string.h>
 #include <time.h>
 
+#include <rgl/array.h>
 #include <rgl/logging.h>
 #include <rgl/util.h>
 
@@ -33,11 +34,19 @@ static DebugLevel debug_level_default = DebugLevelInfo;
 static DebugLevel g_debug_level;
 static _Thread_local DebugLevel t_debug_level;
 
+static Array logger_streams;
+
 __attribute__((constructor))
 static void setup()
 {
+  array_new(&logger_streams, 8, sizeof(LoggerStream));
   g_debug_level = debug_level_default;
   t_debug_level = debug_level_default;
+}
+
+void rgl_logger_add_stream(LoggerStream stream)
+{
+  array_push(&logger_streams, &stream);
 }
 
 void t_debug_level_set(DebugLevel level)
@@ -101,45 +110,54 @@ void _rgl_logger(DebugLevel level, char* file, int line, const char* func,
   va_list args;
   va_start(args, fmt);
 
-  FILE* streams[] = {
-      stderr,
-  };
-
   time_t log_time = time(NULL);
   struct tm* time_info = localtime(&log_time);
   char* time_str = calloc(1, 4096);
   // ISO Datetime
   strftime(time_str, 4096, "%Y-%m-%dT%H:%M:%S%z", time_info);
 
-  for (int i = 0; i < sizeof(streams) / sizeof(streams[0]); i++)
-    if (streams[i] == stderr && target_level < level)
-    {
+  for (int i = 0; i < logger_streams.used; i++)
+  {
+    LoggerStream log_stream = *(LoggerStream*)array_get(&logger_streams, i);
+    FILE* stream = log_stream.stream;
+    char* filename = log_stream.filename;
+
+    if (stream == stderr && target_level < level)
       continue;
-    }
-    else
+
+    if (filename)
+      stream = fopen(filename, "a");
+
+    if (file) // If file is NULL, don't print the header
     {
-      if (file) // If file is NULL, don't print the header
-      {
-        char buffer[128];
-        sprintf(buffer, LOC_COL "%s:%03d:%s()%s: %s", file, line, func,
-                col(level), conditional_escape(level));
-        fprintf(streams[i], "%s: [%s] %s", debuglevel_tostring(level), time_str,
-                buffer);
-
-      }
-      vfprintf(streams[i], fmt, args);
-      fprintf(streams[i], ESC);
-      if (!(streams[i] == stderr || streams[i] == stdout))
-        fclose(streams[i]);
-
-      if (file && (level == DebugLevelError || level == DebugLevelWarning))
-      {
-        u64 frames = 0;
-        char** trace = stacktrace_tochararray(&frames);
-        for (int j = 1; j < frames; j++)
-          fprintf(streams[i], "\t%s\n", trace[j]);
-      }
+      char buffer[128];
+      sprintf(buffer, LOC_COL "%s:%03d:%s()%s: %s", file, line, func,
+          col(level), conditional_escape(level));
+      fprintf(stream, "%s: [%s] %s", debuglevel_tostring(level), time_str,
+          buffer);
     }
+
+    vfprintf(stream, fmt, args);
+    fprintf(stream, ESC);
+
+    if (filename)
+    {
+      fclose(stream);
+      stream = fopen(filename, "a");
+    }
+
+    if (file && (level == DebugLevelError || level == DebugLevelWarning))
+    {
+      u64 frames = 0;
+      char** trace = stacktrace_tochararray(&frames);
+      for (int j = 1; j < frames; j++)
+        fprintf(stream, "\t%s\n", trace[j]);
+    }
+
+    if (filename)
+      fclose(stream);
+  }
+
 
   free(time_str);
   va_end(args);
