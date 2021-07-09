@@ -2,6 +2,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#ifndef _WIN32
+#include <unistd.h> // unlink
+#endif
+
 #include <rgl/logging.h>
 #include <rgl/util.h>
 
