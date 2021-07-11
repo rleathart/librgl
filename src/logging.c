@@ -8,6 +8,12 @@
 #include <rgl/logging.h>
 #include <rgl/util.h>
 
+#ifdef _WIN32
+#include <io.h>
+#else
+#include <unistd.h>
+#endif
+
 /*
  * Colour related code contributed by Elwyn John
  * https://github.com/ElwynJohn
@@ -107,8 +113,6 @@ void _rgl_logger(DebugLevel level, char* file, int line, const char* func,
                  const char* fmt, ...)
 {
   DebugLevel target_level = t_debug_level;
-  va_list args;
-  va_start(args, fmt);
 
   time_t log_time = time(NULL);
   struct tm* time_info = localtime(&log_time);
@@ -118,11 +122,14 @@ void _rgl_logger(DebugLevel level, char* file, int line, const char* func,
 
   for (int i = 0; i < logger_streams.used; i++)
   {
+    va_list args;
+    va_start(args, fmt);
+
     LoggerStream log_stream = *(LoggerStream*)array_get(&logger_streams, i);
     FILE* stream = log_stream.stream;
     char* filename = log_stream.filename;
 
-    if (stream == stderr && target_level < level)
+    if (isatty(fileno(stream)) && target_level < level)
       continue;
 
     if (filename)
@@ -140,12 +147,6 @@ void _rgl_logger(DebugLevel level, char* file, int line, const char* func,
     vfprintf(stream, fmt, args);
     fprintf(stream, ESC);
 
-    if (filename)
-    {
-      fclose(stream);
-      stream = fopen(filename, "a");
-    }
-
     if (file && (level == DebugLevelError || level == DebugLevelWarning))
     {
       u64 frames = 0;
@@ -156,9 +157,8 @@ void _rgl_logger(DebugLevel level, char* file, int line, const char* func,
 
     if (filename)
       fclose(stream);
+    va_end(args);
   }
 
-
   free(time_str);
-  va_end(args);
 }
