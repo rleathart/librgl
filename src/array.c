@@ -34,6 +34,13 @@ void array_new(Array* self, u64 initial_capacity, u64 data_size)
   self->data = malloc(self->capacity * sizeof(void*));
 }
 
+void array_free(Array* self)
+{
+  for (u64 i = 0; i < self->capacity; i++)
+    if (array_index_is_allocated(self, i))
+      free(self->data[i]);
+}
+
 void array_resize(Array* self, u64 new_nelem)
 {
   byte* old_block = self->allocated_indexes;
