@@ -129,11 +129,11 @@ void _rgl_logger(DebugLevel level, char* file, int line, const char* func,
     FILE* stream = log_stream.stream;
     char* filename = log_stream.filename;
 
-    if (isatty(fileno(stream)) && target_level < level)
-      continue;
-
     if (filename)
       stream = fopen(filename, "a");
+
+    if (stream && isatty(fileno(stream)) && target_level < level)
+      continue;
 
     if (file) // If file is NULL, don't print the header
     {
