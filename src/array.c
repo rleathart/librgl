@@ -8,6 +8,8 @@
 
 bool array_index_is_allocated(Array* self, u64 index)
 {
+  if (index >= self->capacity || index < 0)
+    ELOG("Index %" PRIu64 " out of bounds for array %p\n", index, self);
   u64 offset = index / 8;
   u64 bit = index % 8;
   byte b = self->allocated_indexes[offset];
@@ -16,6 +18,8 @@ bool array_index_is_allocated(Array* self, u64 index)
 
 void set_index_allocated(Array* self, u64 index, bool is_allocated)
 {
+  if (index >= self->capacity || index < 0)
+    ELOG("Index %" PRIu64 " out of bounds for array %p\n", index, self);
   u64 offset = index / 8;
   u64 bit = index % 8;
 
