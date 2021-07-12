@@ -114,6 +114,7 @@ void array_remove(Array* self, u64 index)
   set_index_allocated(self, index, false);
   self->used--;
   free(self->data[index]);
+  self->data[index] = NULL;
 }
 
 Array* array_squash(Array* self)
