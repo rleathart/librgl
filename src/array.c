@@ -115,3 +115,39 @@ void array_remove(Array* self, u64 index)
   self->used--;
   free(self->data[index]);
 }
+
+Array* array_squash(Array* self)
+{
+  // Just make a new array and push all the elements of self onto it
+  Array* squashed = malloc(sizeof(Array));
+  array_new(squashed, self->used, self->data_size);
+
+  for (u64 i = 0; i < self->capacity; i++)
+    if (array_index_is_allocated(self, i))
+      array_push(squashed, array_get(self, i));
+
+  array_free(self);
+  *self = *squashed;
+
+  return self;
+}
+
+Array* array_concat(Array* self, Array arr)
+{
+  if (self->data_size != arr.data_size)
+  {
+    ELOG("Cannot concat arrays with sizes %" PRIu64 " and %" PRIu64 "!\n",
+         self->data_size, arr.data_size);
+    return NULL;
+  }
+  u64 idx = self->capacity;
+  array_resize(self, self->capacity + arr.capacity);
+  for (u64 i = 0; i < arr.capacity; i++)
+  {
+    if (array_index_is_allocated(&arr, i))
+      array_set(self, array_get(&arr, i), idx);
+    idx++;
+  }
+
+  return self;
+}

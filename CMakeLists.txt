@@ -75,6 +75,14 @@ if(RGL_BUILD_TESTS)
   add_executable(test_array test/array.c)
   target_link_libraries(test_array ${PROJECT_NAME})
   add_test(NAME array COMMAND test_array)
+
+  add_executable(test_array_squash test/array_squash.c)
+  target_link_libraries(test_array_squash ${PROJECT_NAME})
+  add_test(NAME array_squash COMMAND test_array_squash)
+
+  add_executable(test_array_concat test/array_concat.c)
+  target_link_libraries(test_array_concat ${PROJECT_NAME})
+  add_test(NAME array_concat COMMAND test_array_concat)
 endif()
 
 ################################################################################
