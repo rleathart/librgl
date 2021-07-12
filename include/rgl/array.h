@@ -21,6 +21,8 @@ typedef struct
   byte* allocated_indexes;
 } Array;
 
+#define array_get_as(_array, _index, _type) (*(_type *)array_get(_array, _index))
+
 bool array_index_is_allocated(Array* self, u64 index);
 void array_new(Array* self, u64 initial_capacity, u64 data_size);
 void array_free(Array* self);
@@ -28,3 +30,4 @@ void array_push(Array* self, void* data);
 void array_resize(Array* self, u64 new_nelem);
 void array_set(Array* self, void* data, u64 index);
 void* array_get(Array* self, u64 index);
+void array_remove(Array* self, u64 index);

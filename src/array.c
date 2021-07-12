@@ -94,3 +94,22 @@ void* array_get(Array* self, u64 index)
 
   return self->data[index];
 }
+
+void array_remove(Array* self, u64 index)
+{
+  if (index >= self->capacity || index < 0)
+  {
+    ELOG("Index %llu out of bounds for array %p\n", index, self);
+    return;
+  }
+  if (!array_index_is_allocated(self, index))
+  {
+    WLOG("Index %llu has not been assigned for array %p\n", index,
+        self);
+    return;
+  }
+
+  set_index_allocated(self, index, false);
+  self->used--;
+  free(self->data[index]);
+}
