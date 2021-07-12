@@ -32,7 +32,7 @@ void array_new(Array* self, u64 initial_capacity, u64 data_size)
   self->capacity = initial_capacity;
   self->allocated_indexes =
       calloc(initial_capacity / 8 + (initial_capacity % 8 != 0), sizeof(byte));
-  self->data = malloc(self->capacity * sizeof(void*));
+  self->data = calloc(self->capacity, sizeof(void*));
 }
 
 void array_free(Array* self)
@@ -72,7 +72,7 @@ void array_set(Array* self, void* data, u64 index)
   if (array_index_is_allocated(self, index)) // Reuse exisitng memory block
     memcpy(self->data[index], data, self->data_size);
   else // Need to allocate new memory
-    memcpy((self->data[index] = malloc(self->data_size)), data,
+    memcpy((self->data[index] = calloc(1, self->data_size)), data,
            self->data_size);
 
   if (index > self->back)
