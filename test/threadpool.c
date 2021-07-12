@@ -1,3 +1,4 @@
+#include <inttypes.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -59,7 +60,7 @@ int main(int argc, char* argv[])
   }
 
   for (int i = 0; i < NUM_TASKS; i++)
-    printf("task[%d] (%p) returned: %lld and printed %s\n", i, tasks[i], (u64)tasks[i]->result,
+    printf("task[%d] (%p) returned: %" PRIu64 " and printed %s\n", i, tasks[i], (u64)tasks[i]->result,
            ((Args*)tasks[i]->args)->printed);
 
   return 0;

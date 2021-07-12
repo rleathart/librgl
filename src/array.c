@@ -1,3 +1,4 @@
+#include <inttypes.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -46,7 +47,8 @@ void array_resize(Array* self, u64 new_nelem)
   byte* old_block = self->allocated_indexes;
   u64 old_size = self->capacity / 8 + (self->capacity % 8 != 0);
 
-  self->data = realloc(self->data, (self->capacity = new_nelem) * sizeof(void*));
+  self->data =
+      realloc(self->data, (self->capacity = new_nelem) * sizeof(void*));
 
   self->allocated_indexes =
       calloc(self->capacity / 8 + (self->capacity % 8 != 0), sizeof(byte));
@@ -58,15 +60,16 @@ void array_push(Array* self, void* data)
 {
   if (self->back == self->capacity - 1)
     array_resize(self, self->capacity * 2);
-  array_set(self, data, self->back + array_index_is_allocated(self, self->back));
+  array_set(self, data,
+            self->back + array_index_is_allocated(self, self->back));
 }
 
 void array_set(Array* self, void* data, u64 index)
 {
   if (index >= self->capacity || index < 0)
-    ELOG("Index %llu out of bounds for array %p\n", index, self);
+    ELOG("Index %" PRIu64 " out of bounds for array %p\n", index, self);
 
-  if (array_index_is_allocated(self, index)) // Can just reuse exisitng memory block
+  if (array_index_is_allocated(self, index)) // Reuse exisitng memory block
     memcpy(self->data[index], data, self->data_size);
   else // Need to allocate new memory
     memcpy((self->data[index] = malloc(self->data_size)), data,
@@ -85,12 +88,12 @@ void* array_get(Array* self, u64 index)
 {
   if (index >= self->capacity || index < 0)
   {
-    ELOG("Index %llu out of bounds for array %p\n", index, self);
+    ELOG("Index %" PRIu64 " out of bounds for array %p\n", index, self);
     return NULL;
   }
   if (!array_index_is_allocated(self, index))
-    WLOG("Accessing uninitialised memory at index %llu in array %p\n", index,
-         self);
+    WLOG("Accessing uninitialised memory at index %" PRIu64 " in array %p\n",
+         index, self);
 
   return self->data[index];
 }
@@ -99,13 +102,12 @@ void array_remove(Array* self, u64 index)
 {
   if (index >= self->capacity || index < 0)
   {
-    ELOG("Index %llu out of bounds for array %p\n", index, self);
+    ELOG("Index %" PRIu64 " out of bounds for array %p\n", index, self);
     return;
   }
   if (!array_index_is_allocated(self, index))
   {
-    WLOG("Index %llu has not been assigned for array %p\n", index,
-        self);
+    WLOG("Index %" PRIu64 " has not been assigned for array %p\n", index, self);
     return;
   }
 
