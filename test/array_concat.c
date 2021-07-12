@@ -37,7 +37,7 @@ int main(void)
     if (expected[i] != 0 && !array_index_is_allocated(&one, i))
       return 1;
     if (array_index_is_allocated(&one, i))
-      if (array_get_as(&one, i, int) != expected[i])
+      if (*(int*)array_get(&one, i) != expected[i])
         return 1;
   }
 

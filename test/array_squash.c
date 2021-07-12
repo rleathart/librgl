@@ -23,7 +23,7 @@ int main(void)
   {
     if (!array_index_is_allocated(&arr, i))
       return 1;
-    if (array_get_as(&arr, i, int) != expected[i])
+    if (*(int*)array_get(&arr, i) != expected[i])
       return 1;
   }
 

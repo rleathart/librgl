@@ -77,7 +77,7 @@ void rgl_logger_remove_stream(FILE* stream)
   for (u64 i = 0; i < logger_streams.capacity; i++)
   {
     if (array_index_is_allocated(&logger_streams, i) &&
-        array_get_as(&logger_streams, i, LoggerStream).stream == stream)
+        (*(LoggerStream*)array_get(&logger_streams, i)).stream == stream)
       array_remove(&logger_streams, i);
   }
 }
@@ -87,7 +87,7 @@ void rgl_logger_remove_file(char* filename)
   for (u64 i = 0; i < logger_streams.capacity; i++)
   {
     if (array_index_is_allocated(&logger_streams, i) &&
-        strcmp(array_get_as(&logger_streams, i, LoggerStream).filename,
+        strcmp((*(LoggerStream*)array_get(&logger_streams, i)).filename,
                filename) == 0)
       array_remove(&logger_streams, i);
   }
