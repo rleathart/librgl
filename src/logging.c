@@ -14,6 +14,12 @@
 #include <unistd.h>
 #endif
 
+typedef struct
+{
+  char* filename;
+  FILE* stream;
+} LoggerStream;
+
 /*
  * Colour related code contributed by Elwyn John
  * https://github.com/ElwynJohn
@@ -50,9 +56,41 @@ static void setup()
   t_debug_level = debug_level_default;
 }
 
-void rgl_logger_add_stream(LoggerStream stream)
+void rgl_logger_add_file(char* filename)
 {
-  array_push(&logger_streams, &stream);
+  LoggerStream log_stream = {
+      .filename = strdup(filename),
+  };
+  array_push(&logger_streams, &log_stream);
+}
+
+void rgl_logger_add_stream(FILE* stream)
+{
+  LoggerStream log_stream = {
+      .stream = stream,
+  };
+  array_push(&logger_streams, &log_stream);
+}
+
+void rgl_logger_remove_stream(FILE* stream)
+{
+  for (u64 i = 0; i < logger_streams.capacity; i++)
+  {
+    if (array_index_is_allocated(&logger_streams, i) &&
+        array_get_as(&logger_streams, i, LoggerStream).stream == stream)
+      array_remove(&logger_streams, i);
+  }
+}
+
+void rgl_logger_remove_file(char* filename)
+{
+  for (u64 i = 0; i < logger_streams.capacity; i++)
+  {
+    if (array_index_is_allocated(&logger_streams, i) &&
+        strcmp(array_get_as(&logger_streams, i, LoggerStream).filename,
+               filename) == 0)
+      array_remove(&logger_streams, i);
+  }
 }
 
 void t_debug_level_set(DebugLevel level)
