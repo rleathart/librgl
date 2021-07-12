@@ -39,6 +39,11 @@ void sleep_ms(u64 ms)
 #ifdef _WIN32
   Sleep(ms);
 #else
+  struct timespec ts = {
+    .tv_sec = ms / 1000,
+    .tv_nsec = (ms % 1000) * 1e6,
+  };
+  nanosleep(&ts, NULL);
 #endif
 }
 
