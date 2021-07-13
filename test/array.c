@@ -22,4 +22,6 @@ int main(void)
     array_push(&arr, &i);
   for (int i = 0; i < arr.capacity; i++)
     printf("is_allocated[%d]: %d\n", i, array_index_is_allocated(&arr, i));
+
+  array_free(&arr);
 }

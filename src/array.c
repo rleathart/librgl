@@ -44,6 +44,8 @@ void array_free(Array* self)
   for (u64 i = 0; i < self->capacity; i++)
     if (array_index_is_allocated(self, i))
       free(self->data[i]);
+  free(self->data);
+  free(self->allocated_indexes);
 }
 
 void array_resize(Array* self, u64 new_nelem)
