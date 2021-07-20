@@ -26,17 +26,8 @@ void this_func_will_error()
 int main(void)
 {
   signal(SIGSEGV, handle_signal);
-  LoggerStream stream[] = {
-      {
-          .stream = stderr,
-      },
-      {
-          .filename = strdup("rgl.log"),
-      },
-  };
-
-  for (int i = 0; i < 2; i++)
-    rgl_logger_add_stream(stream[i]);
+  rgl_logger_add_file("rgl.log");
+  rgl_logger_add_stream(stderr);
 
   ILOG("Some info\n");
   WLOG("Some warn\n");
