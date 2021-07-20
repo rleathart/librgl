@@ -48,6 +48,21 @@ static void setup()
   array_new(&logger_streams, 8, sizeof(LoggerStream));
   g_debug_level = debug_level_default;
   t_debug_level = debug_level_default;
+
+#ifdef _WIN32
+  // Enable termnial sequences
+  HANDLE out[] = {
+    GetStdHandle(STD_OUTPUT_HANDLE),
+    GetStdHandle(STD_ERROR_HANDLE),
+  };
+  for (int i = 0; i < 2; i++)
+  {
+    DWORD mode = 0;
+    GetConsoleMode(out[i], &mode);
+    mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    SetConsoleMode(out[i], mode);
+  }
+#endif
 }
 
 void rgl_logger_add_stream(LoggerStream stream)
