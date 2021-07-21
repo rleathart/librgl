@@ -29,6 +29,7 @@ void array_resize(Array* self, u64 new_nelem);
 void array_set(Array* self, void* data, u64 index);
 void* array_get(Array* self, u64 index);
 void array_remove(Array* self, u64 index);
+Array* array_copy(Array* dest, Array src);
 /// @brief Converts to a contiguous array in place. Also resizes.
 /// @return Array* self
 Array* array_squash(Array* self);

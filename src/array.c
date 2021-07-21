@@ -123,6 +123,24 @@ void array_remove(Array* self, u64 index)
   self->data[index] = NULL;
 }
 
+Array* array_copy(Array* dest, Array src)
+{
+  *dest = src;
+
+  dest->allocated_indexes =
+      calloc(src.capacity / 8 + (src.capacity % 8 != 0), sizeof(byte));
+  dest->data = calloc(dest->capacity, sizeof(void*));
+
+  for (u64 i = 0; i < dest->capacity; i++)
+  {
+    if (!array_index_is_allocated(&src, i))
+      continue;
+
+    array_set(dest, src.data[i], i);
+  }
+  return dest;
+}
+
 Array* array_squash(Array* self)
 {
   // Just make a new array and push all the elements of self onto it
