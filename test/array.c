@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <inttypes.h>
 
 #include <rgl/array.h>
 
@@ -22,6 +23,12 @@ int main(void)
     array_push(&arr, &i);
   for (int i = 0; i < arr.capacity; i++)
     printf("is_allocated[%d]: %d\n", i, array_index_is_allocated(&arr, i));
+
+  Array copy;
+  array_copy(&copy, arr);
+  array_push(&arr, &i);
+  printf("copy_allocated[%" PRIu64 "]: %d\n", copy.back, array_index_is_allocated(&copy, copy.back));
+  printf("arr_allocated[%" PRIu64 "]: %d\n", arr.back, array_index_is_allocated(&arr, arr.back));
 
   array_free(&arr);
 }
