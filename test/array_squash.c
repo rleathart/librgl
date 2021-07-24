@@ -6,13 +6,13 @@ int main(void)
   int i = 0;
   array_new(&arr, 7, sizeof(int));
   i = 1;
-  array_set(&arr, &i, 0);
+  array_set(&arr, 0, &i);
   i = 2;
-  array_set(&arr, &i, 3);
+  array_set(&arr, 3, &i);
   i = 3;
-  array_set(&arr, &i, 5);
+  array_set(&arr, 5, &i);
   i = 4;
-  array_set(&arr, &i, 6);
+  array_set(&arr, 6, &i);
 
   array_squash(&arr);
 

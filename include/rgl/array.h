@@ -26,7 +26,7 @@ void array_new(Array* self, u64 initial_capacity, u64 data_size);
 void array_free(Array* self);
 void array_push(Array* self, void* data);
 void array_resize(Array* self, u64 new_nelem);
-void array_set(Array* self, void* data, u64 index);
+void array_set(Array* self, u64 index, void* data);
 void* array_get(Array* self, u64 index);
 void array_remove(Array* self, u64 index);
 Array* array_copy(Array* dest, Array src);

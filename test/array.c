@@ -16,7 +16,7 @@ int main(void)
   for (int i = 0; i < arr.back; i++)
     printf("arr[%d]: %d\n", i, *(int*)array_get(&arr, i));
   array_get(&arr, 2);
-  array_set(&arr, &i, 6);
+  array_set(&arr, 6, &i);
   for (int i = 0; i < arr.capacity; i++)
     printf("is_allocated[%d]: %d\n", i, array_index_is_allocated(&arr, i));
   for (int i = 0; i < 12; i++)

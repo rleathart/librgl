@@ -66,11 +66,11 @@ void array_push(Array* self, void* data)
 {
   if (self->back == self->capacity - 1)
     array_resize(self, self->capacity * 2);
-  array_set(self, data,
-            self->back + array_index_is_allocated(self, self->back));
+  array_set(self,
+            self->back + array_index_is_allocated(self, self->back), data);
 }
 
-void array_set(Array* self, void* data, u64 index)
+void array_set(Array* self, u64 index, void* data)
 {
   if (index >= self->capacity || index < 0)
     ELOG("Index %" PRIu64 " out of bounds for array %p\n", index, self);
@@ -136,7 +136,7 @@ Array* array_copy(Array* dest, Array src)
     if (!array_index_is_allocated(&src, i))
       continue;
 
-    array_set(dest, src.data[i], i);
+    array_set(dest, i, src.data[i]);
   }
   return dest;
 }
@@ -170,7 +170,7 @@ Array* array_concat(Array* self, Array arr)
   for (u64 i = 0; i < arr.capacity; i++)
   {
     if (array_index_is_allocated(&arr, i))
-      array_set(self, array_get(&arr, i), idx);
+      array_set(self, idx, array_get(&arr, i));
     idx++;
   }
 

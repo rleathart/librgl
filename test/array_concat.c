@@ -8,18 +8,18 @@ int main(void)
   array_new(&two, 7, sizeof(int));
 
   int i = 1;
-  array_set(&one, &i, 0);
+  array_set(&one, 0, &i);
   i++;
-  array_set(&one, &i, 2);
+  array_set(&one, 2, &i);
   i++;
-  array_set(&one, &i, 3);
+  array_set(&one, 3, &i);
   i++;
 
-  array_set(&two, &i, 1);
+  array_set(&two, 1, &i);
   i++;
-  array_set(&two, &i, 2);
+  array_set(&two, 2, &i);
   i++;
-  array_set(&two, &i, 4);
+  array_set(&two, 4, &i);
   i++;
 
   array_concat(&one, two);
