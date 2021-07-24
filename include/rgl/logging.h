@@ -32,10 +32,17 @@ __attribute__((__format__ (__printf__, 5, 6)))
 void _rgl_logger(DebugLevel level, char* file, int line, const char* func, const char* fmt, ...);
 // clang-format on
 
+void rgl_logger_thread_setup();
+
 void rgl_logger_add_file(char* filename);
 void rgl_logger_add_stream(FILE* stream);
 void rgl_logger_remove_file(char* filename);
 void rgl_logger_remove_stream(FILE* stream);
+void rgl_logger_thread_add_file(char* filename);
+void rgl_logger_thread_add_stream(FILE* stream);
+void rgl_logger_thread_remove_file(char* filename);
+void rgl_logger_thread_remove_stream(FILE* stream);
+void rgl_logger_thread_remove_all();
 
 void t_debug_level_set(DebugLevel level);
 DebugLevel t_debug_level_get(void);
