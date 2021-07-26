@@ -60,6 +60,7 @@ void array_resize(Array* self, u64 new_nelem)
       calloc(self->capacity / 8 + (self->capacity % 8 != 0), sizeof(byte));
 
   memcpy(self->allocated_indexes, old_block, old_size);
+  free(old_block);
 }
 
 void array_push(Array* self, void* data)
@@ -153,6 +154,7 @@ Array* array_squash(Array* self)
 
   array_free(self);
   *self = *squashed;
+  free(squashed);
 
   return self;
 }
