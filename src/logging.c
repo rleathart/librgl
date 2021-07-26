@@ -235,6 +235,9 @@ void _rgl_logger(DebugLevel level, char* file, int line, const char* func,
   is_logging = true;
   DebugLevel target_level = t_debug_level;
 
+  if (target_level < level)
+    return;
+
   time_t log_time = time(NULL);
   struct tm* time_info = localtime(&log_time);
   char* time_str = calloc(1, 4096);
@@ -256,9 +259,6 @@ void _rgl_logger(DebugLevel level, char* file, int line, const char* func,
       stream = fopen(filename, "a");
 
     if (!stream)
-      continue;
-
-    if (isatty(fileno(stream)) && target_level < level)
       continue;
 
     if (file) // If file is NULL, don't print the header
