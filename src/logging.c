@@ -235,14 +235,14 @@ void _rgl_logger(DebugLevel level, char* file, int line, const char* func,
   is_logging = true;
   DebugLevel target_level = t_debug_level;
 
-  if (target_level < level)
-    return;
-
   time_t log_time = time(NULL);
   struct tm* time_info = localtime(&log_time);
   char* time_str = calloc(1, 4096);
   // ISO Datetime
   strftime(time_str, 4096, "%Y-%m-%dT%H:%M:%S%z", time_info);
+
+  if (target_level < level)
+    goto end;
 
   for (int i = 0; i < t_logger_streams.capacity; i++)
   {
@@ -286,6 +286,7 @@ void _rgl_logger(DebugLevel level, char* file, int line, const char* func,
     va_end(args);
   }
 
+end:
   free(time_str);
   is_logging = false;
 }
