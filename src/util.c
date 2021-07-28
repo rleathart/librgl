@@ -47,8 +47,13 @@ void sleep_ms(u64 ms)
 #endif
 }
 
+// NOTE: This is a no-op in release builds
 char** stacktrace_tochararray(u64* _frames)
 {
+#if defined(NDEBUG) && !defined(REL_WITH_DEB_INFO)
+  *_frames = 0;
+  return NULL;
+#else
   void* stack[100];
 
 #ifdef _WIN32
@@ -90,5 +95,6 @@ char** stacktrace_tochararray(u64* _frames)
 #else
   *_frames = backtrace(stack, 100);
   return backtrace_symbols(stack, *_frames);
+#endif
 #endif
 }

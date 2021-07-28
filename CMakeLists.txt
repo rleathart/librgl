@@ -16,6 +16,10 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   add_compile_definitions(_DEBUG=1 DEBUG=1)
 endif()
 
+if(CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo)
+  add_compile_definitions(REL_WITH_DEB_INFO=1)
+endif()
+
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS YES CACHE BOOL "Export all symbols")
 
 # Read CMAKE_PREFIX_PATH from environment if it's not set
