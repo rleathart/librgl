@@ -34,6 +34,11 @@ foreach(path ${CMAKE_PREFIX_PATH})
   link_directories(${path}/lib)
 endforeach(path)
 
+# Just dump everything in the build dir so the executables can find dlls
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
 project(rgl C)
 
 include_directories(include)
@@ -60,33 +65,7 @@ target_link_libraries(${PROJECT_NAME} ${RGL_LIBS})
 
 if(RGL_BUILD_TESTS)
   include(CTest)
-  add_executable(test_threadpool test/threadpool.c)
-  target_link_libraries(test_threadpool ${PROJECT_NAME})
-  add_test(NAME threadpool COMMAND test_threadpool)
-
-  add_executable(test_queue test/queue.c)
-  target_link_libraries(test_queue ${PROJECT_NAME})
-  add_test(NAME queue COMMAND test_queue)
-
-  add_executable(test_ringbuffer test/ringbuffer.c)
-  target_link_libraries(test_ringbuffer ${PROJECT_NAME})
-  add_test(NAME ringbuffer COMMAND test_ringbuffer)
-
-  add_executable(test_logging test/logging.c)
-  target_link_libraries(test_logging ${PROJECT_NAME})
-  add_test(NAME logging COMMAND test_logging)
-
-  add_executable(test_array test/array.c)
-  target_link_libraries(test_array ${PROJECT_NAME})
-  add_test(NAME array COMMAND test_array)
-
-  add_executable(test_array_squash test/array_squash.c)
-  target_link_libraries(test_array_squash ${PROJECT_NAME})
-  add_test(NAME array_squash COMMAND test_array_squash)
-
-  add_executable(test_array_concat test/array_concat.c)
-  target_link_libraries(test_array_concat ${PROJECT_NAME})
-  add_test(NAME array_concat COMMAND test_array_concat)
+  add_subdirectory(test)
 endif()
 
 ################################################################################
