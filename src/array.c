@@ -119,6 +119,14 @@ void array_remove(Array* self, u64 index)
     return;
   }
 
+  if (index == self->back)
+    for (u64 i = self->capacity - 1; i >= 0; i--)
+      if (array_index_is_allocated(self, i))
+      {
+        self->back = i;
+        break;
+      }
+
   set_index_allocated(self, index, false);
   self->used--;
 }
