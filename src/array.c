@@ -123,12 +123,17 @@ void array_remove(Array* self, u64 index)
   self->used--;
 
   if (index == self->back)
-    for (u64 i = self->capacity - 1; i >= 0; i--)
+    for (u64 i = self->capacity - 1;; i--)
+    {
       if (array_index_is_allocated(self, i))
       {
         self->back = i;
         break;
       }
+
+      if (i == 0)
+        break;
+    }
 }
 
 Array* array_copy(Array* dest, Array src)
