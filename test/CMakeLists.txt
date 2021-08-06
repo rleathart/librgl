@@ -21,6 +21,7 @@ rgl_add_tests(
   array_push.c
   array_get.c
   array_set.c
+  array_remove.c
   array_resize.c
   array_squash.c
   array_concat.c
