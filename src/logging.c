@@ -16,11 +16,9 @@
 #include <unistd.h>
 #endif
 
-typedef struct
-{
-  char* filename;
-  FILE* stream;
-} LoggerStream;
+// All threads start with:
+//  Default debug level
+//  No LoggerStreams
 
 /*
  * Colour related code contributed by Elwyn John
@@ -43,27 +41,26 @@ const DebugLevel debug_level_default = DebugLevelDebug;
 const DebugLevel debug_level_default = DebugLevelInfo;
 #endif
 
-static DebugLevel g_debug_level = debug_level_default;
-static _Thread_local DebugLevel t_debug_level = debug_level_default;
-
-static Array g_logger_streams;
 static _Thread_local Array t_logger_streams;
-// There doesn't seem to be a way to call a constructor on thread creation, so
-// this bool is a workaround.
+static _Thread_local Array t_debug_level_stack;
+
 static volatile atomic_bool is_logging = false;
+static _Thread_local bool did_thread_setup = false;
 
 void rgl_logger_thread_setup()
 {
-  // t_debug_level inherits the current global level
-  array_copy(&t_logger_streams, g_logger_streams);
-  t_debug_level = g_debug_level;
+  if (did_thread_setup)
+    return; // Don't need to do anything if setup was already called
+
+  array_new(&t_logger_streams, 8, sizeof(LoggerStream));
+  array_new(&t_debug_level_stack, 8, sizeof(DebugLevel));
+  t_debug_level_push(debug_level_default);
+
+  did_thread_setup = true;
 }
 
 static void __attribute__((constructor)) rgl_logger_setup()
 {
-  array_new(&g_logger_streams, 8, sizeof(LoggerStream));
-  rgl_logger_thread_setup();
-
 #ifdef _WIN32
   // Enable termnial sequences
   HANDLE out[] = {
@@ -78,6 +75,19 @@ static void __attribute__((constructor)) rgl_logger_setup()
     SetConsoleMode(out[i], mode);
   }
 #endif
+}
+
+void t_debug_level_push(DebugLevel level)
+{
+  array_push(&t_debug_level_stack, &level);
+}
+
+DebugLevel t_debug_level_pop()
+{
+  DebugLevel level =
+      *(DebugLevel*)array_get(&t_debug_level_stack, t_debug_level_stack.back);
+  array_remove(&t_debug_level_stack, t_debug_level_stack.back);
+  return level;
 }
 
 void rgl_logger_thread_remove_all()
@@ -109,28 +119,12 @@ static void rgl_logger_remove(Array* logger_streams, LoggerStream log_stream)
   }
 }
 
-void rgl_logger_add_stream(FILE* stream)
-{
-  LoggerStream log_stream = {
-      .stream = stream,
-  };
-  rgl_logger_add(&g_logger_streams, log_stream);
-}
-
 void rgl_logger_thread_add_stream(FILE* stream)
 {
   LoggerStream log_stream = {
       .stream = stream,
   };
   rgl_logger_add(&t_logger_streams, log_stream);
-}
-
-void rgl_logger_add_file(char* filename)
-{
-  LoggerStream log_stream = {
-      .filename = strdup(filename),
-  };
-  rgl_logger_add(&g_logger_streams, log_stream);
 }
 
 void rgl_logger_thread_add_file(char* filename)
@@ -141,28 +135,12 @@ void rgl_logger_thread_add_file(char* filename)
   rgl_logger_add(&t_logger_streams, log_stream);
 }
 
-void rgl_logger_remove_stream(FILE* stream)
-{
-  LoggerStream log_stream = {
-      .stream = stream,
-  };
-  rgl_logger_remove(&g_logger_streams, log_stream);
-}
-
 void rgl_logger_thread_remove_stream(FILE* stream)
 {
   LoggerStream log_stream = {
       .stream = stream,
   };
   rgl_logger_remove(&t_logger_streams, log_stream);
-}
-
-void rgl_logger_remove_file(char* filename)
-{
-  LoggerStream log_stream = {
-      .filename = strdup(filename),
-  };
-  rgl_logger_remove(&g_logger_streams, log_stream);
 }
 
 void rgl_logger_thread_remove_file(char* filename)
@@ -173,14 +151,10 @@ void rgl_logger_thread_remove_file(char* filename)
   rgl_logger_remove(&t_logger_streams, log_stream);
 }
 
-void t_debug_level_set(DebugLevel level)
-{
-  t_debug_level = level;
-}
-
 DebugLevel t_debug_level_get()
 {
-  return t_debug_level;
+  return *(DebugLevel*)array_get(&t_debug_level_stack,
+                                 t_debug_level_stack.back);
 }
 
 static char* debuglevel_tostring(DebugLevel level)
@@ -230,10 +204,14 @@ static char* conditional_escape(DebugLevel level)
 void _rgl_logger(DebugLevel level, char* file, int line, const char* func,
                  const char* fmt, ...)
 {
+  if (t_debug_level_stack.used == 0 || t_logger_streams.used == 0)
+    return;
+
   while (is_logging)
     sleep_ms(10);
   is_logging = true;
-  DebugLevel target_level = t_debug_level;
+  DebugLevel target_level =
+      *(DebugLevel*)array_get(&t_debug_level_stack, t_debug_level_stack.back);
 
   time_t log_time = time(NULL);
   struct tm* time_info = localtime(&log_time);

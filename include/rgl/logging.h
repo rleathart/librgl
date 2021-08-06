@@ -18,6 +18,12 @@ typedef enum
   DebugLevelAll, // Keep this at the end of the enum
 } DebugLevel;
 
+typedef struct
+{
+  char* filename;
+  FILE* stream;
+} LoggerStream;
+
 // clang-format off
 #define ILOG(fmt, ...) _rgl_logger(DebugLevelInfo, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__)
 #define WLOG(fmt, ...) _rgl_logger(DebugLevelWarning, __FILE__, __LINE__, __FUNCTION__, fmt, ##__VA_ARGS__)
@@ -34,16 +40,12 @@ void _rgl_logger(DebugLevel level, char* file, int line, const char* func, const
 
 void rgl_logger_thread_setup();
 
-void rgl_logger_add_file(char* filename);
-void rgl_logger_add_stream(FILE* stream);
-void rgl_logger_remove_file(char* filename);
-void rgl_logger_remove_stream(FILE* stream);
 void rgl_logger_thread_add_file(char* filename);
 void rgl_logger_thread_add_stream(FILE* stream);
 void rgl_logger_thread_remove_file(char* filename);
 void rgl_logger_thread_remove_stream(FILE* stream);
 void rgl_logger_thread_remove_all();
 
-void t_debug_level_set(DebugLevel level);
-DebugLevel t_debug_level_get(void);
-void tdebug_level_set_prev();
+void t_debug_level_push(DebugLevel level);
+DebugLevel t_debug_level_pop();
+DebugLevel t_debug_level_get();

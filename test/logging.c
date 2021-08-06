@@ -27,8 +27,8 @@ void this_func_will_error()
 void* test_thread(void* void_args)
 {
   rgl_logger_thread_setup();
-  rgl_logger_thread_remove_all();
   rgl_logger_thread_add_file("thread.log");
+  rgl_logger_thread_add_stream(stderr);
   ILOG("Thread!\n");
   unlink("thread.log");
   return NULL;
@@ -37,9 +37,10 @@ void* test_thread(void* void_args)
 int main(void)
 {
   signal(SIGSEGV, handle_signal);
-  rgl_logger_add_file("rgl.log");
-  rgl_logger_add_stream(stderr);
+
   rgl_logger_thread_setup();
+  rgl_logger_thread_add_file("rgl.log");
+  rgl_logger_thread_add_stream(stderr);
 
   pthread_t thread;
   pthread_create(&thread, NULL, test_thread, NULL);
