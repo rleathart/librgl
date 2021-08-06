@@ -27,6 +27,10 @@ int main(void)
   Array copy;
   array_copy(&copy, arr);
   array_push(&arr, &i);
+  if (copy.data == arr.data)
+    return 1;
+  if (copy.allocation_bitmask == arr.allocation_bitmask)
+    return 1;
   printf("copy_allocated[%" PRIu64 "]: %d\n", copy.back, array_index_is_allocated(&copy, copy.back));
   printf("arr_allocated[%" PRIu64 "]: %d\n", arr.back, array_index_is_allocated(&arr, arr.back));
 
