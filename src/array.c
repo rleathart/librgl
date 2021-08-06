@@ -135,6 +135,10 @@ Array* array_copy(Array* dest, Array src)
 {
   *dest = src;
 
+  dest->data = calloc(dest->capacity, dest->data_size);
+  dest->allocation_bitmask =
+      calloc(dest->capacity / 8 + (dest->capacity % 8 != 0), 1);
+
   memcpy(dest->allocation_bitmask, src.allocation_bitmask,
          src.capacity / 8 + (src.capacity % 8 != 0));
   memcpy(dest->data, src.data, src.capacity * src.data_size);
