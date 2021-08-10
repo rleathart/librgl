@@ -131,7 +131,7 @@ void array_remove(Array* self, u64 index)
       }
 
   if (index == self->back)
-    for (u64 i = self->back - 1;; i--)
+    for (u64 i = self->back;; i--)
     {
       if (array_index_is_allocated(self, i))
       {
