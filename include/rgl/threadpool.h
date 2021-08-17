@@ -16,6 +16,7 @@ typedef struct
   void* args;
   void* result;
   bool is_complete;
+  bool free_on_complete;
 } Task;
 
 typedef struct

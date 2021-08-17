@@ -12,6 +12,7 @@ Task* task_new(Task* task, void* (*func)(void*), void* args)
 
   memset(task, 0, sizeof(*task));
   task->is_complete = false;
+  task->free_on_complete = false;
   task->func = func;
   task->args = args;
 
@@ -41,6 +42,9 @@ static void* worker_thread(void* void_args)
     {
       task->result = task->func(task->args);
       task->is_complete = true;
+
+      if (task->free_on_complete)
+        free(task);
     }
   }
   return NULL;
