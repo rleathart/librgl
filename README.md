@@ -3,12 +3,19 @@ Requirements
 
 Tested with Clang 12.0.0
 
+Cloning
+=======
+
+```bash
+git clone --recursive https://github.com/rleathart/librgl
+```
+
 Building the library
 ====================
 
 ```bash
 cmake -B build
-cmake --build buid
+cmake --build build
 ```
 
 Installing the library
