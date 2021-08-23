@@ -41,6 +41,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 project(rgl C)
 
+if(WIN32)
+  add_subdirectory(extern/pthreads-win32-CMake)
+endif()
+
 include_directories(include)
 
 set(SRC
@@ -54,14 +58,8 @@ set(SRC
   src/array.c
   )
 
-set(RGL_LIBS)
-if(WIN32)
-  find_package(pthread REQUIRED)
-  list(APPEND RGL_LIBS pthread)
-endif()
-
 add_library(${PROJECT_NAME} ${SRC})
-target_link_libraries(${PROJECT_NAME} ${RGL_LIBS})
+target_link_libraries(${PROJECT_NAME} pthread)
 
 if(RGL_BUILD_TESTS)
   include(CTest)

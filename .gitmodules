@@ -1,0 +1,3 @@
+[submodule "extern/pthreads-win32-CMake"]
+	path = extern/pthreads-win32-CMake
+	url = https://github.com/rleathart/pthreads-win32-CMake
